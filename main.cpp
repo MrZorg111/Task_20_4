@@ -9,9 +9,10 @@
  *
  * */
 void addition(int a[], int b) {
+    b = 0;
     std::srand(std::time(nullptr));
     for (int i = 0; i < 1000; i++) {
-        switch (rand() % 5 && a[i] == 0) {
+        switch (rand() % 5) {
             case 0:
                 a[i] = 100;
                 break;
@@ -27,8 +28,8 @@ void addition(int a[], int b) {
             case 4:
                 a[i] = 5000;
                 break;
-        }
-        b += i;
+            }
+            b++;
     }
     for (int s = 0; s < 1000; s++) {
         for (int r = 0; r < 999; r++) {
@@ -45,17 +46,17 @@ int main() {
     int arr[1000], count;
     char command;
 
-    std::ofstream bank("P:\\bank.txt");
+    std::ofstream bank("P:\\bank.txt", std::ios::binary);
     do {
         std::cout << "Enter the working command: Withdrawal or replenishment (-/+)";
         std::cin >> command;
         if (command == '+') {
             addition(arr, count);
             std::cout << "The machine is filled with cash.\n";
-        }
+            }
         else {
             int sum;
-            std::cout << "Enter the desired withdrawal amount:";
+            std::cout << "Enter the desired withdrawal amount:\n";
             std::cin >> sum;
             if (sum % 100 != 0) {
                 std::cout << "This operation is not possible, enter a multiple of 100.\n";
@@ -64,34 +65,31 @@ int main() {
                 std::cout << "Cash withdrawal is not possible, there are no funds in the machine. Contact the bank.\n";
             } else {
                 for (int i = 0; sum > 0; i++) {
-                    if (sum != 0 && i == 999) {
-                        std::cout << "There are not enough funds in the device.\n";
-                        break;
-                    }
-                    if (sum > arr[i]) {
+                    if (sum >= arr[i]) {
                         sum -= arr[i];
                         arr[i] = 0;
                     }
+                    if (sum != 0 && i == 999) {
+                        std::cout << "There are not enough funds in the device.\n";
+                        std::cout << "The device was not enough " << sum << " to give it to you.\n";
+                        break;
+                    }
 
                 }
-                std::cout << "Good";
+                if (sum == 0) {
+                std::cout << "Cash has been issued.\n";
+            }
             }
         }
         std::cout << "Do you want to continue working: (yes/no)";
         std::cin >> yes_no;
     }while (yes_no == "yes");
+    bank << "\t\tThe presence of banknotes in the device:\n";
+    for (int y = 0; y < 1000; y++) {
+        bank << " " << arr[y];
+        if (y % 20 == 0 && y > 0) {
+            bank << "\n";
+        }
+    }
+    bank.close();
 }
-/*
-  for (int t = 0; t < 1000; t++) {
-    std::cout << arr[t] << " ";
-    if (t % 20 == 0 && t > 0) {
-      std::cout << "\n";
-      for (int i = 0; sum > 0; i++) {
-                if (sum > arr[i]) {
-                   sum -= arr[i];
-                }
-            }
-            std::cout << "Good";
-    }
-    }
-*/
